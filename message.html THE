@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>A Message From My Heart</title>
+    <style>
+        body {
+            background: #2c3e50;
+            color: #ecf0f1;
+            font-family: 'Georgia', serif;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            overflow: hidden;
+            margin: 0;
+        }
+        .message-box {
+            max-width: 600px;
+            padding: 40px;
+            background: rgba(0,0,0,0.3);
+            border-radius: 20px;
+            border-left: 8px solid #ff4757;
+            position: relative;
+        }
+        #typewriter { font-size: 1.4rem; line-height: 1.6; min-height: 200px; }
+        .nav-btn {
+            display: inline-block;
+            margin-top: 30px;
+            padding: 10px 25px;
+            background: #ff4757;
+            color: white;
+            text-decoration: none;
+            border-radius: 20px;
+            opacity: 0;
+            transition: 1s;
+        }
+        .show { opacity: 1 !important; }
+    </style>
+</head>
+<body>
+    <div class="message-box">
+        <div id="typewriter"></div>
+        <a href="surprise.html" id="nextBtn" class="nav-btn">I have one more thing to ask... 💍</a>
+    </div>
+
+    <script>
+        const text = `My Dearest Achal,\n\nI’ve spent a lot of time thinking about what makes me happy, and the answer is always you. You are my best friend, my home, and my soulmate. I can't imagine a single day without your smile. I want to build a future with you, full of love, laughter, and endless adventures...\n\nAre you ready?`;
+        let i = 0;
+        function type() {
+            if (i < text.length) {
+                document.getElementById("typewriter").innerHTML += text.charAt(i) === '\n' ? '<br>' : text.charAt(i);
+                i++;
+                setTimeout(type, 50);
+            } else {
+                document.getElementById("nextBtn").classList.add('show');
+            }
+        }
+        window.onload = type;
+    </script>
+</body>
+</html>
