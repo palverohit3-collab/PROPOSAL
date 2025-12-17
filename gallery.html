@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Our Journey Together</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(135deg, #ff9a9e 0%, #fecfef 100%);
+            min-height: 100vh;
+            padding: 40px 20px;
+        }
+        .header { text-align: center; margin-bottom: 40px; color: white; }
+        .title { font-size: 3rem; text-shadow: 2px 2px 4px rgba(0,0,0,0.2); }
+        .gallery-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 25px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        .gallery-item {
+            background: white;
+            padding: 10px;
+            border-radius: 15px;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+            transition: 0.3s;
+            cursor: pointer;
+        }
+        .gallery-item:hover { transform: rotate(-2deg) scale(1.05); }
+        .gallery-item img {
+            width: 100%;
+            height: 250px;
+            object-fit: cover;
+            border-radius: 10px;
+        }
+        .caption { text-align: center; padding: 10px; color: #c44569; font-weight: bold; font-style: italic; }
+        .nav-container { text-align: center; margin-top: 50px; }
+        .nav-btn {
+            background: #c44569;
+            color: white;
+            padding: 12px 30px;
+            text-decoration: none;
+            border-radius: 25px;
+            margin: 0 10px;
+            transition: 0.3s;
+        }
+        .nav-btn:hover { background: #ff4757; }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1 class="title">🎞️ Every Picture Tells a Story...</h1>
+        <p>A collection of my favorite moments with you.</p>
+    </div>
+    
+    <div class="gallery-grid">
+        <div class="gallery-item">
+            <img src="YOUR_IMAGE_URL_1" alt="Memory 1">
+            <div class="caption">Where it all began...</div>
+        </div>
+        <div class="gallery-item">
+            <img src="YOUR_IMAGE_URL_2" alt="Memory 2">
+            <div class="caption">The first laugh we shared.</div>
+        </div>
+        <div class="gallery-item">
+            <img src="YOUR_IMAGE_URL_3" alt="Memory 3">
+            <div class="caption">Our favorite place.</div>
+        </div>
+    </div>
+
+    <div class="nav-container">
+        <a href="index.html" class="nav-btn">🏠 Home</a>
+        <a href="message.html" class="nav-btn">Next: My Letter 💌</a>
+    </div>
+</body>
+</html>
