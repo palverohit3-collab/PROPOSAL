@@ -33,6 +33,28 @@
             transition: 0.3s;
         }
         .nav-btn:hover { background: white; color: #c44569; transform: translateY(-5px); }
+        
+        /* Music Button Styling */
+        .music-ctrl {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: rgba(255, 255, 255, 0.3);
+            backdrop-filter: blur(5px);
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            border: 1px solid white;
+            z-index: 100;
+            font-size: 1.2rem;
+            transition: 0.3s;
+        }
+        .music-ctrl:hover { transform: scale(1.1); background: rgba(255, 255, 255, 0.5); }
+
         @keyframes pulse { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.1); } }
         @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
         .heart { position: absolute; color: rgba(255,105,180,0.6); pointer-events: none; animation: floatUp 10s infinite linear; }
@@ -40,17 +62,39 @@
     </style>
 </head>
 <body>
+
+    <audio id="bgMusic" loop>
+        <source src="YOUR_URL_HERE" type="audio/mpeg">
+    </audio>
+
+    <div class="music-ctrl" id="musicBtn" onclick="toggleMusic()">🎵</div>
+
     <div class="container">
         <h1 class="title">Rupali, My Everything...</h1>
         <p class="subtitle">Every moment with you is a memory I treasure forever.</p>
-        <div class="ring-container">💍</div>
+        <div class="ring-container" onclick="toggleMusic()">💍</div>
         <div class="navigation">
             <a href="gallery.html" class="nav-btn">🎞️ Our Story</a>
             <a href="message.html" class="nav-btn">💌 My Heart to Yours</a>
             <a href="surprise.html" class="nav-btn">✨ The Surprise</a>
         </div>
     </div>
+
     <script>
+        const music = document.getElementById('bgMusic');
+        const musicBtn = document.getElementById('musicBtn');
+
+        function toggleMusic() {
+            if (music.paused) {
+                music.play();
+                musicBtn.innerHTML = '🎶';
+            } else {
+                music.pause();
+                musicBtn.innerHTML = '📁';
+            }
+        }
+
+        // Heart Animation
         function createHeart() {
             const heart = document.createElement('div');
             heart.className = 'heart';
@@ -62,6 +106,14 @@
             setTimeout(() => heart.remove(), 10000);
         }
         setInterval(createHeart, 400);
+
+        // Auto-play music on first interaction anywhere
+        document.body.addEventListener('click', function() {
+            if (music.paused) {
+                music.play();
+                musicBtn.innerHTML = '🎶';
+            }
+        }, { once: true });
     </script>
 </body>
 </html>
