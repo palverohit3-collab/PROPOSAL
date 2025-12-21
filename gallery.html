@@ -12,18 +12,35 @@
             background: linear-gradient(135deg, #ff9a9e 0%, #fecfef 100%);
             min-height: 100vh;
             padding: 40px 20px;
+            overflow-x: hidden; /* Prevents hearts from causing scrollbars */
         }
-        .header { text-align: center; margin-bottom: 40px; color: white; }
+        .header { text-align: center; margin-bottom: 40px; color: white; position: relative; z-index: 2; }
         .title { font-size: 3rem; text-shadow: 2px 2px 4px rgba(0,0,0,0.2); }
 
-        /* --- MASONRY GRID (Fixes cropping/fitting issues) --- */
+        /* --- FLOATING HEARTS CSS --- */
+        .heart {
+            position: fixed;
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 20px;
+            user-select: none;
+            pointer-events: none;
+            z-index: 1;
+            animation: floatUp 6s linear infinite;
+        }
+        @keyframes floatUp {
+            0% { transform: translateY(100vh) rotate(0deg); opacity: 1; }
+            100% { transform: translateY(-10vh) rotate(360deg); opacity: 0; }
+        }
+
+        /* --- MASONRY GRID --- */
         .gallery-grid {
             column-count: 3;
             column-gap: 20px;
             max-width: 1200px;
             margin: 0 auto;
+            position: relative;
+            z-index: 2;
         }
-
         .gallery-item {
             background: white;
             padding: 10px;
@@ -35,19 +52,16 @@
             width: 100%;
             margin-bottom: 20px;
         }
-
         .gallery-item:hover { transform: rotate(-1deg) scale(1.03); }
-
         .gallery-item img {
             width: 100%;
-            height: auto; /* Keeps the whole person in frame */
+            height: auto;
             border-radius: 10px;
             display: block;
         }
-
         .caption { text-align: center; padding: 10px; color: #c44569; font-weight: bold; font-style: italic; }
 
-        /* --- LIGHTBOX STYLES --- */
+        /* --- LIGHTBOX --- */
         .lightbox {
             display: none;
             position: fixed;
@@ -62,77 +76,37 @@
             opacity: 0;
             transition: opacity 0.3s ease;
         }
-
         .lightbox-content {
             max-width: 90%;
             max-height: 85vh;
             border: 4px solid white;
             border-radius: 10px;
-            object-fit: contain; /* Shows full image */
+            object-fit: contain;
         }
-
-        .close-lightbox {
-            position: absolute;
-            top: 20px;
-            right: 30px;
-            color: white;
-            font-size: 45px;
-            font-weight: bold;
-            cursor: pointer;
-        }
-
-        /* Navigation Arrows */
-        .nav-arrow {
-            background: rgba(255, 255, 255, 0.15);
-            color: white;
-            border: none;
-            font-size: 35px;
-            padding: 15px 20px;
-            cursor: pointer;
-            position: absolute;
-            top: 50%;
-            transform: translateY(-50%);
-            border-radius: 50%;
-            transition: 0.3s;
-            user-select: none;
-        }
-
-        .nav-arrow:hover { background: rgba(255, 255, 255, 0.4); }
+        .close-lightbox { position: absolute; top: 20px; right: 30px; color: white; font-size: 45px; font-weight: bold; cursor: pointer; }
+        .nav-arrow { background: rgba(255, 255, 255, 0.15); color: white; border: none; font-size: 35px; padding: 15px 20px; cursor: pointer; position: absolute; top: 50%; transform: translateY(-50%); border-radius: 50%; }
         .left-arrow { left: 20px; }
         .right-arrow { right: 20px; }
 
-        .nav-container { text-align: center; margin-top: 50px; }
-        .nav-btn {
-            background: #c44569;
-            color: white;
-            padding: 12px 30px;
-            text-decoration: none;
-            border-radius: 25px;
-            margin: 0 10px;
-            transition: 0.3s;
-            display: inline-block;
-        }
-        .nav-btn:hover { background: #ff4757; }
+        .nav-container { text-align: center; margin-top: 50px; position: relative; z-index: 2; }
+        .nav-btn { background: #c44569; color: white; padding: 12px 30px; text-decoration: none; border-radius: 25px; margin: 0 10px; }
 
-        /* Mobile Adjustments */
-        @media (max-width: 768px) {
-            .gallery-grid { column-count: 2; }
-            .title { font-size: 2rem; }
-        }
-        @media (max-width: 480px) {
-            .gallery-grid { column-count: 1; }
-            .nav-arrow { padding: 10px 15px; font-size: 25px; }
-        }
+        @media (max-width: 768px) { .gallery-grid { column-count: 2; } }
+        @media (max-width: 480px) { .gallery-grid { column-count: 1; } }
     </style>
 </head>
 <body>
+
+    <audio id="bgMusic" loop>
+        <source src="Rohit & Rupali name song hindi.mp3" type="audio/mpeg">
+    </audio>
 
     <div class="header">
         <h1 class="title">🎞️ Every Picture Tells a Story...</h1>
         <p>A collection of my favorite moments with you.</p>
     </div>
     
-    <div class="gallery-grid">
+    <div class="gallery-grid" id="gallery">
         <div class="gallery-item" onclick="openLightbox(0)">
             <img src="https://raw.githubusercontent.com/palverohit3-collab/image-hosting/refs/heads/main/1000004703.jpg" alt="Memory 1">
             <div class="caption">Where it all began...</div>
@@ -174,42 +148,48 @@
     <script>
         let currentImgIndex = 0;
         const images = document.querySelectorAll('.gallery-item img');
-        const lightbox = document.getElementById('lightbox');
-        const lightboxImg = document.getElementById('lightbox-img');
+        const music = document.getElementById('bgMusic');
 
+        // --- HEART GENERATOR ---
+        function createHeart() {
+            const heart = document.createElement('div');
+            heart.classList.add('heart');
+            heart.innerHTML = '❤️';
+            heart.style.left = Math.random() * 100 + 'vw';
+            heart.style.animationDuration = (Math.random() * 3 + 3) + 's';
+            heart.style.opacity = Math.random();
+            document.body.appendChild(heart);
+            setTimeout(() => { heart.remove(); }, 6000);
+        }
+        setInterval(createHeart, 500);
+
+        // --- LIGHTBOX & MUSIC LOGIC ---
         function openLightbox(index) {
             currentImgIndex = index;
             updateLightbox();
-            lightbox.style.display = 'flex';
-            // Trigger fade-in
-            setTimeout(() => { lightbox.style.opacity = '1'; }, 10);
+            const lb = document.getElementById('lightbox');
+            lb.style.display = 'flex';
+            setTimeout(() => { lb.style.opacity = '1'; }, 10);
+            
+            // Start music on first click
+            music.play().catch(e => console.log("Music waiting for interaction"));
         }
 
         function updateLightbox() {
-            lightboxImg.src = images[currentImgIndex].src;
+            document.getElementById('lightbox-img').src = images[currentImgIndex].src;
         }
 
         function changeImage(direction, event) {
-            event.stopPropagation(); // Prevents lightbox from closing
-            currentImgIndex += direction;
-            
-            if (currentImgIndex >= images.length) currentImgIndex = 0;
-            if (currentImgIndex < 0) currentImgIndex = images.length - 1;
-            
+            event.stopPropagation();
+            currentImgIndex = (currentImgIndex + direction + images.length) % images.length;
             updateLightbox();
         }
 
         function closeLightbox() {
-            lightbox.style.opacity = '0';
-            setTimeout(() => { lightbox.style.display = 'none'; }, 300);
+            const lb = document.getElementById('lightbox');
+            lb.style.opacity = '0';
+            setTimeout(() => { lb.style.display = 'none'; }, 300);
         }
-
-        // Close on 'Esc' key
-        document.addEventListener('keydown', (e) => {
-            if (e.key === "Escape") closeLightbox();
-            if (e.key === "ArrowRight") changeImage(1, event);
-            if (e.key === "ArrowLeft") changeImage(-1, event);
-        });
     </script>
 </body>
 </html>
